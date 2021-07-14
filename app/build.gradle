@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ManagedVirtualDevice
+
 /*
  * Copyright 2018 Google LLC
  *
@@ -51,6 +53,47 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        devices {
+            pixel2api29(com.android.build.api.dsl.ManagedVirtualDevice) {
+                // Use device profiles you typically see in Android Studio
+                device = "Pixel 2"
+                apiLevel = 29
+                // You can also specify "aosp" if you don’t require Google Play Services.
+                systemImageSource = "google"
+                abi = "x86"
+            }
+            pixel5api30(com.android.build.api.dsl.ManagedVirtualDevice) {
+                // Use device profiles you typically see in Android Studio
+                device = "Pixel 5"
+                apiLevel = 30
+                // You can also specify "aosp" if you don’t require Google Play Services.
+                systemImageSource = "google"
+                abi = "x86"
+            }
+        }
+        deviceGroups {
+            phoneAndTablet {
+                targetDevices.addAll(devices.pixel2api29, devices.pixel5api30)
+            }
+        }
+        emulatorSnapshots {
+            // Enables the feature
+            enableForTestFailures true
+            // The number of snapshots to take during a test run. When not
+            // specified, the default value is 2. After reaching the max number
+            // of snapshots, subsequent assertion failures in a test run do not
+            // generate additional snapshots. Keep in mind, snapshots can consume
+            // a significant amount of disk space.
+            maxSnapshotsForTestFailures 2
+        }
+        failureRetention {
+            // Generates snapshots that are compressed into a single TAR file.
+            compressSnapshots true
+        }
+
     }
 
     kotlinOptions {
